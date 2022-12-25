@@ -1,4 +1,3 @@
-# from kafka import KafkaProducer
 import datetime
 import pytz # Time존 적용
 import time
@@ -15,18 +14,13 @@ import requests
 import pandas as pd
 import pymongo
 from pymongo import MongoClient
-# kafka
-# TOPIC_NAME = "melon"
-# BROKERS = ["localhost:8900", "localhost:8901", "localhost:8902"]
-# producer = KafkaProducer(bootstrap_servers=BROKERS)
+
 
 # airflow용 Mongo DB
 client=pymongo.MongoClient("mongodb://localhost:27017/")
-#client=pymongo.MongoClient('mongodb://127.0.0.1:27017')
-# client=pymongo.MongoClient(host='localhost',port=27017)
 db=client.crawling
 # melon=db['melon']
-#melon=client.crawling.melon
+# melon=client.crawling.melon
 
 
 
@@ -74,7 +68,7 @@ def generate_payment_data(now_date, now_time):
         data['time'] = now_time
         data["index"] = idx
        
-        # 속도측면 
+        # 속도 측면에서 index를 활용! 
         melonList[idx] = data
 
     query_keys = sorted(list(melonList.keys()))
@@ -102,10 +96,10 @@ def generate_payment_data(now_date, now_time):
         likes_cnt=(like_info["SUMMCNT"])
         the_music['likes'] = likes_cnt
     return melonList
-# kafka
-#while True:
+
+# 최종 데이터 처리
 now_date, now_time = get_seoul_date()
 data = generate_payment_data(now_date, now_time)
 print(data.values())
-# mongo DB
+# mongo DB에 데이터 넣기
 db.melon.insert_many(data.values()) 
